@@ -4,6 +4,7 @@ import { trpc } from "../utils/trpc";
 
 import type { FC, ChangeEvent, FormEvent } from "react";
 import { Alert } from "./ui/Alert";
+import Link from "next/link";
 
 interface Props {
   type?: "register" | "login";
@@ -155,7 +156,13 @@ export const LoginModal: FC<Props> = ({ type = "login" }) => {
               </div>
             ) : null}
 
-            <div className="flex w-full justify-end">
+            <div className="flex w-full items-center justify-end gap-x-3">
+              {type === "login" ? (
+                <Link href="/register" className="text-stone-800">
+                  ¿No tienes cuenta? Crea una aquí
+                </Link>
+              ) : null}
+
               <button
                 type="submit"
                 className="w-20 rounded bg-stone-800 p-3 font-semibold text-white"

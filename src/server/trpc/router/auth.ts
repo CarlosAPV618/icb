@@ -4,13 +4,11 @@ import { router, publicProcedure } from "../trpc";
 export const auth = router({
   register: publicProcedure
     .input(
-      z
-        .object({
-          name: z.string().nullish(),
-          email: z.string().email().nullish(),
-          password: z.string().nullish(),
-        })
-        .nullish()
+      z.object({
+        name: z.string(),
+        email: z.string().email(),
+        password: z.string(),
+      })
     )
     .mutation(async ({ input, ctx: { prisma } }) => {
       const { name, email, password } = input || {};
