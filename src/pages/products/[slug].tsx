@@ -1,30 +1,25 @@
+import { useState } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faCartShopping,
-  faPen,
-  faXmarkCircle,
-} from "@fortawesome/free-solid-svg-icons";
+import { faPen, faXmarkCircle } from "@fortawesome/free-solid-svg-icons";
 import { MainLayout } from "../../components/layout/MainLayout";
-import { Card } from "../../components/ui";
+import { Alert, Card } from "../../components/ui";
 
 import { Product } from "@prisma/client";
 import type { GetStaticPaths, GetStaticProps, NextPage } from "next";
 import { useProductsContext } from "../../context";
+import { AddToCart } from "../../components/cart/AddToCart";
 
 interface Props {
   product: Product;
 }
 
 const Product: NextPage<Props> = ({ product }) => {
+  const [alert, setAlert] = useState("");
   const { deleteProduct } = useProductsContext();
 
   const router = useRouter();
-
-  const addToCart = (produtctId: string) => {
-    console.log(produtctId);
-  };
 
   const editItem = (productId: string) => {
     router.push({ pathname: "/products/new", query: { product: productId } });
@@ -37,6 +32,8 @@ const Product: NextPage<Props> = ({ product }) => {
 
   return (
     <MainLayout>
+      {alert ? <Alert label={alert} type="success" /> : null}
+
       <Card className="min-h-[33rem] p-6">
         <div className="grid grid-cols-2">
           <div className="space-y-10 font-semibold">
@@ -53,15 +50,18 @@ const Product: NextPage<Props> = ({ product }) => {
             </div>
 
             <div className="space-y-4 text-center">
-              <p>${product.price / 100} MXN</p>
+              <div>
+                <p>${product.price / 100} MXN</p>
+                <p className="font-normal">
+                  {product.stock} piezas en existencia
+                </p>
+              </div>
 
-              <button
-                className="rounded bg-black p-3 text-white"
-                onClick={() => addToCart(product.id)}
-              >
-                <FontAwesomeIcon icon={faCartShopping} />
-                <p>Agregar al carrito</p>
-              </button>
+              <AddToCart
+                setAlert={setAlert}
+                productId={product.id}
+                stock={product.stock}
+              />
             </div>
           </div>
 

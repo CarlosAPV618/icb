@@ -1,4 +1,7 @@
-import { faArrowRightFromBracket } from "@fortawesome/free-solid-svg-icons";
+import {
+  faArrowRightFromBracket,
+  faCartShopping,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 import React from "react";
@@ -10,10 +13,19 @@ export const Navbar = () => {
         <h1>e-commerce</h1>
       </Link>
 
-      <Link href="/login" className="flex items-center gap-x-2 text-lg">
-        <FontAwesomeIcon icon={faArrowRightFromBracket} />
-        <p>Cerrar sesión</p>
-      </Link>
+      <div className="flex gap-x-5">
+        <Link href="/cart" className="flex items-center gap-x-2 text-lg">
+          <FontAwesomeIcon icon={faCartShopping} />
+          <p>Mi carrito</p>
+        </Link>
+
+        <div className="h-10 w-[1px] bg-white" />
+
+        <Link href="/login" className="flex items-center gap-x-2 text-lg">
+          <FontAwesomeIcon icon={faArrowRightFromBracket} />
+          <p>Cerrar sesión</p>
+        </Link>
+      </div>
     </div>
   );
 };

@@ -6,6 +6,7 @@ import { ProductsInitialState, ProductsContext, productsReducer } from "./";
 import type { FC, ReactNode } from "react";
 import type { Product } from "@prisma/client";
 import type { NewProduct } from "../interfaces/product";
+import { toSlug } from "../helpers/toSlug";
 
 export interface ProductsState {
   products: Product[];
@@ -19,8 +20,6 @@ export const ProductsProvider: FC<Props> = ({ children }) => {
   const [state, dispatch] = useReducer(productsReducer, ProductsInitialState);
 
   const products = trpc.products.getAllProducts.useQuery();
-  products.data;
-
   const postProduct = trpc.products.createProduct.useMutation();
   const putProduct = trpc.products.editProduct.useMutation();
   const delProduct = trpc.products.deleteProduct.useMutation();
@@ -33,7 +32,18 @@ export const ProductsProvider: FC<Props> = ({ children }) => {
   const createNewProduct = (data: NewProduct) => {
     postProduct.mutate(data);
 
-    dispatch({ type: "Create Product", payload: postProduct.data! });
+    dispatch({
+      type: "Create Product",
+      // Lo hago de esta forma para evitar pedir data al 'backend'
+      payload: {
+        id: state.products.length.toString(),
+        ...data,
+        slug: toSlug(data.name),
+        isDeleted: false,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    });
   };
 
   const editProduct = (id: string, data: Partial<Product>) => {

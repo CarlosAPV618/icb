@@ -24,7 +24,7 @@ export const products = router({
           message: "You have to provide all data",
         });
 
-      const product = await prisma.product.create({
+      await prisma.product.create({
         data: {
           name,
           stock,
@@ -35,7 +35,7 @@ export const products = router({
         },
       });
 
-      return product;
+      return true;
     }),
   getAllProducts: publicProcedure.query(async ({ ctx: { prisma } }) => {
     return await prisma.product.findMany({ where: { isDeleted: false } });

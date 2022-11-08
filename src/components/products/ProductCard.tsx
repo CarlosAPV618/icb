@@ -14,7 +14,7 @@ export const ProductCard: FC<Props> = ({ product }) => {
 
   return (
     <Card
-      className="cursor-pointer"
+      className="cursor-pointer duration-200 hover:shadow-lg"
       onClick={() => {
         router.push(`/products${product.slug}`);
       }}
