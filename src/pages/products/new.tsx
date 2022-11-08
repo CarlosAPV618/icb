@@ -5,18 +5,22 @@ import { MainLayout } from "../../components/layout/MainLayout";
 import { Card, Input } from "../../components/ui";
 
 import type { ChangeEvent, FC, FormEvent } from "react";
+import { useProductsContext } from "../../context";
+import { NewProduct } from "../../interfaces/product";
 
 const formTemplate = {
   name: "",
-  stock: "",
-  price: "",
+  stock: 0,
+  price: 0,
   image: "",
   description: "",
 };
 
 const NewProduct: FC = () => {
-  const [form, setForm] = useState(formTemplate);
+  const [form, setForm] = useState<NewProduct>(formTemplate);
   const [formErrors, setFormErrors] = useState<string[]>([]);
+
+  const { createNewProduct } = useProductsContext();
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -38,6 +42,10 @@ const NewProduct: FC = () => {
         setFormErrors([]);
       }, 2000);
     }
+
+    createNewProduct({ ...form, price: +form.price * 100, stock: +form.stock });
+
+    setForm(formTemplate);
   };
 
   return (

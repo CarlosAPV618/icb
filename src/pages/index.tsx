@@ -2,12 +2,11 @@ import { useRouter } from "next/router";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { MainLayout } from "../components/layout/MainLayout";
-import { ProductCard } from "../components/ui";
+import { ProductsContainer } from "../components/products";
 
 import type { NextPage } from "next";
 
 const Home: NextPage = () => {
-  // const hello = trpc.example.hello.useQuery({ text: "from frontend" });
   const router = useRouter();
 
   return (
@@ -24,7 +23,7 @@ const Home: NextPage = () => {
         </button>
       </div>
 
-      <ProductCard />
+      <ProductsContainer />
     </MainLayout>
   );
 };
