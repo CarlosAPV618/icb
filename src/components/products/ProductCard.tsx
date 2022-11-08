@@ -16,7 +16,7 @@ export const ProductCard: FC<Props> = ({ product }) => {
     <Card
       className="cursor-pointer"
       onClick={() => {
-        router.push(`/products/${product.slug}`);
+        router.push(`/products${product.slug}`);
       }}
     >
       <div className="flex flex-col items-center gap-y-3">

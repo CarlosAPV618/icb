@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { useContext, useEffect, useReducer } from "react";
+import { useCallback, useContext, useEffect, useReducer } from "react";
 import { trpc } from "../utils/trpc";
 import { ProductsInitialState, ProductsContext, productsReducer } from "./";
 
@@ -24,6 +24,11 @@ export const ProductsProvider: FC<Props> = ({ children }) => {
   const postProduct = trpc.products.createProduct.useMutation();
   const putProduct = trpc.products.editProduct.useMutation();
   const delProduct = trpc.products.deleteProduct.useMutation();
+
+  const getProduct = useCallback(
+    (id: string) => state.products.find((product) => product.id === id),
+    [state.products]
+  );
 
   const createNewProduct = (data: NewProduct) => {
     postProduct.mutate(data);
@@ -51,6 +56,7 @@ export const ProductsProvider: FC<Props> = ({ children }) => {
     <ProductsContext.Provider
       value={{
         ...state,
+        getProduct,
         createNewProduct,
         editProduct,
         deleteProduct,

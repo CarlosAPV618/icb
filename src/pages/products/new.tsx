@@ -1,11 +1,12 @@
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import { faFloppyDisk } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useState } from "react";
+import { useProductsContext } from "../../context";
 import { MainLayout } from "../../components/layout/MainLayout";
-import { Card, Input } from "../../components/ui";
+import { Alert, Card, Input } from "../../components/ui";
 
 import type { ChangeEvent, FC, FormEvent } from "react";
-import { useProductsContext } from "../../context";
 import { NewProduct } from "../../interfaces/product";
 
 const formTemplate = {
@@ -19,8 +20,13 @@ const formTemplate = {
 const NewProduct: FC = () => {
   const [form, setForm] = useState<NewProduct>(formTemplate);
   const [formErrors, setFormErrors] = useState<string[]>([]);
+  const [alert, setAlert] = useState("");
 
-  const { createNewProduct } = useProductsContext();
+  const { getProduct, createNewProduct, editProduct } = useProductsContext();
+
+  const router = useRouter();
+
+  const productId = router.query.product as string;
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -43,15 +49,53 @@ const NewProduct: FC = () => {
       }, 2000);
     }
 
-    createNewProduct({ ...form, price: +form.price * 100, stock: +form.stock });
+    const formattedForm = {
+      ...form,
+      price: +form.price * 100,
+      stock: +form.stock,
+    };
+
+    if (productId) {
+      editProduct(productId, formattedForm);
+    } else {
+      createNewProduct(formattedForm);
+    }
 
     setForm(formTemplate);
+
+    setAlert(productId ? "Producto actualizado" : "Producto creado");
+
+    setTimeout(() => {
+      setAlert("");
+    }, 2000);
+
+    router.push("/");
   };
+
+  useEffect(() => {
+    if (productId) {
+      const product = getProduct(productId);
+
+      if (!product) return;
+
+      const { name, stock, price, image, description } = product;
+
+      setForm({
+        name,
+        stock,
+        price: price / 100,
+        image,
+        description,
+      });
+    }
+  }, [productId, getProduct]);
 
   return (
     <MainLayout title="Agregar un nuevo producto">
+      {alert ? <Alert label={alert} type="success" /> : null}
+
       <h2 className="text-xl font-semibold text-stone-800">
-        Agregar un nuevo producto
+        {productId ? "Editar producto" : "Agregar un nuevo producto"}
       </h2>
 
       <Card className="mt-6 h-full p-6">

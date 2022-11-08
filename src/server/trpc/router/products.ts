@@ -38,7 +38,7 @@ export const products = router({
       return product;
     }),
   getAllProducts: publicProcedure.query(async ({ ctx: { prisma } }) => {
-    return await prisma.product.findMany();
+    return await prisma.product.findMany({ where: { isDeleted: false } });
   }),
   editProduct: publicProcedure
     .input(
